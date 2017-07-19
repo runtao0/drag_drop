@@ -1,0 +1,86 @@
+/* Reset */
+html, body, header, nav, h1, a, ul, li,
+strong, main, section, img, div, h2, p,
+form, fieldset, label, input, textarea,
+button, article, footer, small {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-family: inherit;
+  box-sizing: inherit;
+  text-align: inherit;
+  text-decoration: inherit;
+  vertical-align: inherit;
+  color: inherit;
+  background: transparent;
+  font-weight: inherit;
+  z-index: inherit;
+  line-height: inherit;
+}
+
+ul, li {
+  list-style: none;
+  width:auto;
+}
+
+body, header {
+  background: transparent;
+  color: black;
+  font-family: Helvetica, sans-serif;
+  font-size: 16px;
+  box-sizing: content-box;
+  z-index: 0;
+  display: flex;
+  justify-content: space-around;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+/* Clearfix */
+.group:after {
+  clear: both;
+  content: "";
+  display: block;
+}
+
+/* User Section */
+body > section.user-section {
+    padding: 20px 5px;
+}
+.user-section > h2.name {
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 2em;
+    text-align: center;
+    padding: 20px 10px;
+}
+
+ul.album-list {
+    height: auto;
+    max-height: 500px;
+    overflow-y: scroll;
+}
+
+.album-list > li {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: white;
+    opacity: 90%
+}
+
+.album-list > li:nth-child(2n + 1) {
+    background-color: navy;
+    color: white;
+}
+
+.album-list > li > div {
+    padding: 1em 2em;
+}
+
+.album-list > li > div:first-child {
+    margin-right: 1em;
+}

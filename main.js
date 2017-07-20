@@ -1,6 +1,6 @@
 $(() => {
     const container = $('body');
-    const userIDs = [ 1, 2 ];
+    const userIds = [ 1, 2 ];
     const model = 'users';
 
     // make this mmore modular
@@ -8,7 +8,7 @@ $(() => {
     const table1 = new Table({ container });
 
     const deferred = [];
-    userIDs.forEach((id) => {
+    userIds.forEach((id) => {
         deferred.push(
             table1.fetchModel({ model: 'users', id })
             .then((user) => table1.recordUser(user))
@@ -24,8 +24,8 @@ $(() => {
 
 })
 
-const _albumList = (userID) => {
-    return $("<ul>", { "class": "album-list", id: `${userID}-user`});
+const _albumList = (userId) => {
+    return $("<ul>", { "class": "album-list", id: `${userId}-user`});
 }
 
 const _albumListItem = (album) => {
@@ -58,7 +58,8 @@ class Table {
         // this.recordAlbums = this.recordAlbums.bind(this);
         this._renderUsers = this._renderUsers.bind(this);
         this._replaceAlbums = this._replaceAlbums.bind(this);
-        this._moveListItem = this._moveListItem.bind(this);
+        this._addAlbumToState = this._addAlbumToState.bind(this);
+        this._removeFromOldColumn = this._removeFromOldColumn.bind(this);
     }
 
     fetchModel({ model, id, associated }) {
@@ -69,7 +70,6 @@ class Table {
     }
 
     _patchModel({ userId, id }) {
-        debugger
         return $.ajax({
             url: `https://jsonplaceholder.typicode.com/albums/${id}/`,
             method: 'PATCH',
@@ -117,52 +117,54 @@ class Table {
 
     //not pure
     _renderUsers() {
-        for (let userID in this.state) {
-            const name = this.state[userID].name ? this.state[userID].name : "No name";
+        for (let userId in this.state) {
+            const name = this.state[userId].name ? this.state[userId].name : "No name";
             const section = $("<section>", { "class": "user-section"});
-            this.state[userID].list = _albumList(userID);
+            this.state[userId].list = _albumList(userId);
             section.append(_userHeader(name))
                 .append(_legend())
-                .append(this.state[userID].list);
+                .append(this.state[userId].list);
 
             this.container.append(section);
         }
     }
 
     _replaceAlbums() {
-        for (let userID in this.state) {
-            for (let albumID in this.state[userID].albums) {
-                const listItem = _albumListItem(this.state[userID].albums[albumID])
-                this.state[userID].list.append(listItem);
-                this.state[userID].albums[albumID].element = listItem;
+        for (let userId in this.state) {
+            for (let albumID in this.state[userId].albums) {
+                const listItem = _albumListItem(this.state[userId].albums[albumID])
+                this.state[userId].list.append(listItem);
+                this.state[userId].albums[albumID] = listItem;
             }
         }
     }
 
     addDragEvents() {
-        for (let userID in this.state) {
-            if (!this.state[userID].list) alert("cannot add drag");
-            this.state[userID].list.mousedown((e) => {
+        for (let userId in this.state) {
+            if (!this.state[userId].list) alert("cannot add drag");
+            this.state[userId].list.mousedown((e) => {
                 const section = $(e.target).closest("section")
                 const li = $(e.target).closest("li");
-                const parent = li.parent();
                 if (!li) return;
+                const parent = li.parent();
 
-                section.css('z-index', "1")
+                section.css('z-index', "1");
                 li.css('z-index', '5');
+                li.css('box-shadow', "1px 1px 1px 1px #6a6969")
 
                 const initialLiPosition = li.offset();
                 const initialMouseX = e.clientX;
                 const initialMouseY = e.clientY;
 
-                document.onmousemove = this._onMouseMove({ li, initialMouseX, initialMouseY, initialLiPosition })
+                document.onmousemove = this._onMouseMove({ li, initialMouseX, initialMouseY, initialLiPosition, parent })
                 document.onmouseup = this._onMouseUp({ li, section, initialLiPosition, parent })
             })
         }
     }
 
-    _onMouseMove({ li, initialMouseX, initialMouseY, initialLiPosition }) {
+    _onMouseMove({ li, initialMouseX, initialMouseY, initialLiPosition, parent }) {
         return (e2) => {
+            parent.css("overflow", "visible");
             const currentMouseX = e2.clientX;
             const currentMouseY = e2.clientY;
 
@@ -188,31 +190,35 @@ class Table {
                             $.when(this._patchModel({
                                 userId: parseInt(albumList.id, 10),
                                 id: li[0].id
-                            })).then((x) => {
-                                    debugger
+                            })).then((album) => {
+                                    this._addAlbumToState(album)
+                                    this._removeFromOldColumn({
+                                        parent,
+                                        li
+                                    })
                                 })
-                            //landed in the other list
                         }
-                } else {
-                    return;
                 }
+                $(albumList).css("overflow-y", "scroll");
             })
+            li.css('box-shadow', "none");
+            li.css('z-index', '0');
             if (returnToOrigin) li.offset(initialLiPosition);
-            document.onmousemove = null
-            section.css('z-index', "0")
+            document.onmousemove = null;
+            section.css('z-index', "0");
         }
     }
 
-    _moveListItem(item) {
-        // removefromoldcolumn
-        // addtoNewColumn
+    _addAlbumToState(album) {
+        const li = _albumListItem(album);
+        this.state[album.userId].albums[album.id] = li;
+        this.state[album.userId].list.append($(li))
     }
 
 
-
-    _removeFromOldColumn({ parent, target, }){
-        // remove from state
-        //and remove from ul
-
+    _removeFromOldColumn({ parent, li }){
+        li.remove()
+        const userId = parseInt(parent[0].id);
+        this.state[userId].albums[li.id] = undefined;
     }
 }

@@ -1,8 +1,6 @@
 /* Reset */
-html, body, header, nav, h1, a, ul, li,
-strong, main, section, img, div, h2, p,
-form, fieldset, label, input, textarea,
-button, article, footer, small {
+html, body, h1, a, ul, li, main,
+section, div, h2, article {
   margin: 0;
   padding: 0;
   border: 0;
@@ -17,6 +15,7 @@ button, article, footer, small {
   font-weight: inherit;
   z-index: inherit;
   line-height: inherit;
+  position: relative;
 }
 
 ul, li {
@@ -24,15 +23,16 @@ ul, li {
   width:auto;
 }
 
-body, header {
+body {
   background: transparent;
-  color: black;
+  color: #2c2c2c;
   font-family: Helvetica, sans-serif;
   font-size: 16px;
   box-sizing: content-box;
   z-index: 0;
   display: flex;
   justify-content: space-around;
+  background-color: #af7bbd;
 }
 
 button:hover {
@@ -48,7 +48,9 @@ button:hover {
 
 /* User Section */
 body > section.user-section {
-    padding: 20px 5px;
+    margin: 20px 5px;
+    border: 1px solid #2c2c2c;
+    position: relative;
 }
 .user-section > h2.name {
     text-transform: uppercase;
@@ -56,26 +58,69 @@ body > section.user-section {
     font-size: 2em;
     text-align: center;
     padding: 20px 10px;
+    color: white;
+    background-color: #390038;
+}
+
+.user-section > article {
+    background-color: #390038;
+    color: white;
+    padding: 1em 2em;
+    display: flex;
+    justify-content: space-between;
+    text-transform: uppercase;
 }
 
 ul.album-list {
+    border-top: 1px solid #2c2c2c;
     height: auto;
-    max-height: 500px;
-    overflow-y: scroll;
+    max-height: 600px;
+    /*overflow-x: visible;*/
+    /*overflow-y: scroll;*/
+}
+
+ul.album-list:hover {
+    border: 1px solid white;
 }
 
 .album-list > li {
+    width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    background-color: white;
-    opacity: 90%
+    background-color: #dbd9e8;
+    opacity: 90%;
+    position: relative;
+}
+
+.album-list > li:before, .album-list > li:after {
+    content: ":";
+    color: #af7bbd;
+    position: absolute;
+    top: 30%;
+}
+
+.album-list > li:before {
+    left: 2%;
+}
+
+.album-list > li:after {
+    right: 2%;
+    display: none;
 }
 
 .album-list > li:nth-child(2n + 1) {
-    background-color: navy;
-    color: white;
+    background-color: #cab3e6;
 }
+
+.album-list >li:hover:after {
+    display: block;
+}
+
+.album-list > li:hover, .album-list > li > *:hover {
+    cursor: -webkit-grab;
+}
+
 
 .album-list > li > div {
     padding: 1em 2em;

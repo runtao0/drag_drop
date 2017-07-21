@@ -1,3 +1,6 @@
+/* I'm assuming compatability only for Chrome,
+since that was the assignment for the JS portion */
+
 /* Reset */
 html, body, h1, a, ul, li, main,
 section, div, h2, article {
@@ -32,9 +35,11 @@ body {
   z-index: 0;
   display: flex;
   align-items: flex-start;
-  justify-content: space-around;
+  justify-content: center;
   background-color: #af7bbd;
   height: 100vh;
+  min-width: 700px;
+  min-height: 900px;
 }
 
 button:hover {
@@ -50,7 +55,7 @@ button:hover {
 
 /* User Section */
 body > section.user-section {
-    margin: 20px 5px;
+    margin: 20px 40px;
     border: 1px solid #2c2c2c;
     position: relative;
     height: auto;
@@ -71,7 +76,7 @@ body > section.user-section:after {
     font-weight: 600;
     font-size: 2em;
     text-align: center;
-    padding: 20px 10px;
+    padding: 1em .5em;
     color: white;
     background-color: #390038;
 }
@@ -85,16 +90,14 @@ body > section.user-section:after {
     text-transform: uppercase;
 }
 
+/* Album list and listItems */
 ul.album-list {
     border-top: 1px solid #2c2c2c;
     height: auto;
+    min-height: 100px;
     max-height: 600px;
     overflow: scroll;
 }
-
-/*ul.album-list:hover {
-    border: 1px solid white;
-}*/
 
 .album-list > li {
     width: 100%;
@@ -134,6 +137,11 @@ ul.album-list {
     cursor: -webkit-grab;
 }
 
+.album-list > li:active {
+    cursor: -webkit-grabbing;
+    box-shadow: 1px 1px 1px 1px #6a6969;
+    z-index: 500;
+}
 
 .album-list > li > div {
     padding: 1em 2em;
@@ -141,4 +149,56 @@ ul.album-list {
 
 .album-list > li > div:first-child {
     margin-right: 1em;
+}
+
+.album-list > li > div {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* Loader from https://codepen.io/alanshortis/pen/eJLVXr */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+#loader {
+    border-radius: 50%;
+    width: 10vh;
+    height: 10vh;
+    border: .5rem solid #390038;
+    border-top-color: white;
+    animation: spin 1s infinite linear;
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    z-index: 2;
+    display: none;
+}
+
+@media (max-width: 1300px) {
+    body {
+        font-size: 12px;
+    }
+}
+
+@media (max-height: 700px) {
+    ul.album-list {
+        max-height: 500px;
+    }
+    body {
+        min-height: 900px;
+    }
+}
+@media (max-width: 900px) {
+    body {
+        font-size: 8px;
+    }
+    ul.album-list {
+        max-height: 400px;
+    }
 }
